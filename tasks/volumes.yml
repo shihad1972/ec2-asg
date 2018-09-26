@@ -1,0 +1,22 @@
+---
+
+- name: Create persistent volumes
+  ec2_vol:
+    name: "{{ item.name }}"
+    state: present
+    region: "{{ region }}"
+    volume_size: "{{ item.size }}"
+    zone: "{{ item.zone }}"
+    volume_type: "{{ item.vol_type | default('gp2') }}"
+    delete_on_termination: no
+    tags: >
+      {{
+        {
+          'Name': item.name
+        } |
+        combine(default_volume_tags)
+      }}
+    with_items: "{{ volumes }}"
+    loop_control:
+      label: "{{ item.name }}"
+  when: volumes is defined

@@ -1,2 +1,5 @@
 ---
 # tasks file for ec2-asg
+
+#- import_tasks: volumes.yml
+- import_tasks: lc.yml

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Output commands and results to log file for testing
+# Uncomment below command and add -x to shebang above to enable
+#exec > /tmp/user-data.log 2>&1
+
+# Collect metadata
+export AZ=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
+export REGION=$(echo $AZ | sed 's/[a-z]$//')
+export INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+
+# Set some required variables
+export IP_ADDR=$(ip addr show  | grep "inet " | grep -v 127.0.0.1 |  awk '{print $2}' | sed 's/\/[0-9]*$//')
+export SHORT_ID=$(echo $INSTANCE_ID | sed 's/^i-//' | cut -c 1-9)
+export DOMAIN="{{ domain }}"
+export FQDN="{{ component | lower}}-${SHORT_ID}.${DOMAIN}"
+
+# Setup Hostname
+hostnamectl set-hostname --static $FQDN
+
+aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Name",Value="$FQDN"
+aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Domain",Value="$DOMAIN"
+aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="VPC",Value="{{ vpc_name }}"
