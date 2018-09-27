@@ -19,7 +19,7 @@
     key_name: "{{ key_name }}"
     instance_type: "{{ instance_type  }}"
     security_groups: "{{ sec_groups }}"
-    user_data_path: "{{ user_data }}"
+    user_data: "{{ lookup('template', user_data) }}"
     instance_profile_name: "{{ iam_role }}"
     assign_public_ip: "{{ public_ip | default('no') }}"
     ebs_optimized: "{{ ebs_optimise | default('no') }}"

@@ -1,0 +1,14 @@
+---
+
+- name: Create the Auto Scaling Group
+  ec2_asg:
+    name: "{{ component }}-asg"
+    region: "{{ region }}"
+    load_balancers: "{{ load_balancers | default([]) }}"
+    availability_zones: "{{ azs | default([]) }}"
+    launch_config_name: "{{ component }}-lc"
+    vpc_zone_identifier: "{{ subnet_ids }}"
+    min_size: "{{ min_size | default(0) }}"
+    max_size: "{{ max_size | default(1) }}"
+    desired_capacity: "{{ desired | default(0) }}"
+  register: new_asg
