@@ -16,7 +16,7 @@
         } |
         combine(default_volume_tags)
       }}
-    with_items: "{{ volumes }}"
-    loop_control:
-      label: "{{ item.name }}"
+  with_items: "{{ volumes }}"
+  loop_control:
+    label: "{{ item.name }}"
   when: volumes is defined
