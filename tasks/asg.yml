@@ -1,8 +1,16 @@
 ---
 
+- assert:
+    that:
+    - region is defined
+    - service is defined
+    - env is defined
+    - component is defined
+    msg: "Required variable not set."
+
 - name: Create the Auto Scaling Group
   ec2_asg:
-    name: "{{ component }}-asg"
+    name: "{{ component | upper }}-{{ env | upper }}-{{ service | upper }}-ASG"
     region: "{{ region }}"
     load_balancers: "{{ load_balancers | default([]) }}"
     availability_zones: "{{ azs | default([]) }}"
