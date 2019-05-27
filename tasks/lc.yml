@@ -11,7 +11,10 @@
 
 - name: Create launch config
   ec2_lc:
-    name: "{{ component }}-lc"
+    # The name of the launch config is how Ansible decides whether to create the LC or not,
+    # so we need the name to change if either the AMI or the userdata script changes.
+    #
+    name: "{{ launch_config }}"
     state: "{{ state | default('present') }}"
     region: "{{ region }}"
     image_id: "{{ ami_id }}"

@@ -6,7 +6,7 @@
     region: "{{ region }}"
     load_balancers: "{{ load_balancers | default([]) }}"
     availability_zones: "{{ azs | default([]) }}"
-    launch_config_name: "{{ component }}-lc"
+    launch_config_name: "{{ launch_config }}"
     vpc_zone_identifier: "{{ subnet_ids }}"
     min_size: "{{ min_size | default(0) }}"
     max_size: "{{ max_size | default(1) }}"
