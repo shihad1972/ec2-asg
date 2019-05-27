@@ -25,6 +25,9 @@ Dependencies
 
 If you require load balancers associated with the ASG, you should already have them created.
 
+You should also have an IAM role 'Default-ec2-Role' available for the instances. You can
+specify your own one with the 'iam_role' variable
+
 Example Playbook
 ----------------
 
