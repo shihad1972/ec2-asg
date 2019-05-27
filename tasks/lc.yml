@@ -7,7 +7,6 @@
     - key_name is defined
     - sec_groups is defined
     - component is defined
-    - iam_role is defined
     msg: "Required variable not set."
 
 - name: Create launch config
@@ -20,7 +19,7 @@
     instance_type: "{{ instance_type  }}"
     security_groups: "{{ sec_groups }}"
     user_data: "{{ lookup('template', user_data) }}"
-    instance_profile_name: "{{ iam_role }}"
+    instance_profile_name: "{{ iam_role | default('Default-ec2-Role') }}"
     assign_public_ip: "{{ public_ip | default('no') }}"
     ebs_optimized: "{{ ebs_optimise | default('no') }}"
   when: user_data is defined
