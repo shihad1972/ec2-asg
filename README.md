@@ -11,7 +11,14 @@ The boto package is required for this role
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+You are required to pass in the following variables:
+
+  - component
+  - service
+  - env
+  - region
+  - ami_id
+  - sec_groups
 
 Dependencies
 ------------
@@ -28,8 +35,16 @@ Example Playbook
             size: 30
             zone: eu-west-1b
             device: /dev/xvdf
+        component: mgt
+        env: nonprod
+        service: auth
+        region: eu-west-2
+        sec_groups:
+          - Auth-SG
+          - default
+        ami_id: ami-01234567
       roles:
-         - { role: username.rolename, x: 42 }
+         - { role: ec2-asg }
 
 License
 -------
