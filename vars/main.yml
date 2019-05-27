@@ -1,4 +1,4 @@
 ---
 # vars file for ec2-asg
 
-launch_config: "{{ component | capitalize }}-{{ env }}-{{ ami_id }}-{{ lookup('template', user_data) | hash('md5') | regex_search('^[a-zA-Z0-9]{6}') }}-lc"
+launch_config: "{{ component | capitalize }}-{{ env | capitalize}}-{{ service }}-{{ ami_id }}-{{ lookup('template', user_data) | hash('md5') | regex_search('^[a-zA-Z0-9]{6}') }}-lc"
