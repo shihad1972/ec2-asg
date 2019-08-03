@@ -27,7 +27,7 @@ aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="VPC",V
 volume_id_{{ loop.index }}=$(aws ec2 describe-volumes --region ${REGION} --filters Name=status,Values=available Name=tag:Name,Values={{ vol.name }} | grep "VolumeId" | awk '{print $2}' | sed 's/[\",]//g')
 
 if [ ! -z "$volume_id_{{ loop.index }}" ]; then
-  aws ec2 attach-volume --region $REGION --device {{ vol.device }} --instance_id ${INSTANCE_ID} --volume_id $volume_id_{{ loop.index }}
+  aws ec2 attach-volume --region $REGION --device {{ vol.device }} --instance_id ${INSTANCE_ID} --volume-id $volume_id_{{ loop.index }}
   if [ $? -ne 0 ]; then
     echo "{{ vol.name }} failed to attach"
   fi
