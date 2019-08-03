@@ -1,6 +1,7 @@
 ---
-# tasks file for ec2-asg
+# defaults file for ec2-asg
 
-- import_tasks: volumes.yml
-- import_tasks: lc.yml
-- import_tasks: asg.yml
+user_data: "{{ role_path }}/templates/default-ud.sh.j2"
+instance_type: t2.micro
+default_volume_tags:
+  VPC: "{{ vpc_name }}"

@@ -3,3 +3,5 @@
 
 user_data: "{{ role_path }}/templates/default-ud.sh.j2"
 instance_type: t2.micro
+default_volume_tags:
+  

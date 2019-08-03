@@ -13,7 +13,7 @@ export INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id
 export IP_ADDR=$(ip addr show  | grep "inet " | grep -v 127.0.0.1 |  awk '{print $2}' | sed 's/\/[0-9]*$//')
 export SHORT_ID=$(echo $INSTANCE_ID | sed 's/^i-//' | cut -c 1-9)
 export DOMAIN="{{ domain }}"
-export FQDN="{{ component | lower}}-${SHORT_ID}.${DOMAIN}"
+export FQDN="{{ service | lower}}-${SHORT_ID}.${DOMAIN}"
 
 # Setup Hostname
 hostnamectl set-hostname --static $FQDN
@@ -21,3 +21,17 @@ hostnamectl set-hostname --static $FQDN
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Name",Value="$FQDN"
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Domain",Value="$DOMAIN"
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="VPC",Value="{{ vpc_name }}"
+
+{% if item.volumes is defined %}
+  {% for vol in item.volumes %}
+volume_id_{{ loop.index }}=$(aws ec2 describe-volumes --region ${REGION} --filters Name=status,Values=available Name=tag:Name,Values={{ vol.name }} | grep "VolumeId" | awk '{print $2}' | sed 's/[\",]//g')
+
+if [ ! -z "$volume_id_{{ loop.index }}" ]; then
+  aws ec2 attach-volume --region $REGION --device {{ vol.device }} --instance_id ${INSTANCE_ID} --volume_id $volume_id_{{ loop.index }}
+  if [ $? -ne 0 ]; then
+    echo "{{ vol.name }} failed to attach"
+  fi
+fi
+  {% endfor %}
+{% endif %}
+
