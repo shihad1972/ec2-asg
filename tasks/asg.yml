@@ -18,5 +18,5 @@
     vpc_zone_identifier: "{{ subnet_ids }}"
     min_size: "{{ min_size | default(0) }}"
     max_size: "{{ max_size | default(1) }}"
-    desired_capacity: "{{ desired | default(0) }}"
+#    desired_capacity: "{{ desired | default(0) }}"
   register: new_asg
