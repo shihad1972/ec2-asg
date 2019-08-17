@@ -17,6 +17,7 @@ export FQDN="{{ service | lower}}-${SHORT_ID}.${DOMAIN}"
 
 # Setup Hostname
 hostnamectl set-hostname --static $FQDN
+printf "$IP_ADDR\t$HOSTNAME\n" >> /etc/hosts
 
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Name",Value="$FQDN"
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Domain",Value="$DOMAIN"
