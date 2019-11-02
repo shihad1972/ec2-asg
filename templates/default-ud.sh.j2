@@ -37,7 +37,7 @@ fi
 
 if [ -f /etc/default/xymon-client ]; then
   sed -i 's/^XYMONSERVERS=".*"/XYMONSERVERS="home.shihad.org"/' /etc/default/xymon-client
-  sed -i 's/^CLIENTHOSTNAME=".*"/CLIENTHOSTNAME="{{ service }}.{{ domain }}"' /etc/default/xymon-client
+  sed -i 's/^CLIENTHOSTNAME=".*"/CLIENTHOSTNAME="{{ service }}.{{ ext_domain }}"/' /etc/default/xymon-client
   systemctl restart xymon-client
 fi
 
