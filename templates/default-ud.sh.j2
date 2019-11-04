@@ -13,14 +13,17 @@ export INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id
 export IP_ADDR=$(ip addr show  | grep "inet " | grep -v 127.0.0.1 |  awk '{print $2}' | sed 's/\/[0-9]*$//')
 export SHORT_ID=$(echo $INSTANCE_ID | sed 's/^i-//' | cut -c 1-9)
 export DOMAIN="{{ domain }}"
-export FQDN="{{ service | lower}}-${SHORT_ID}.${DOMAIN}"
+export HNAME="{{ service | lower}}-${SHORT_ID}"
+export FQDN="${HNAME}.${DOMAIN}"
 
 # Setup Hostname
 hostnamectl set-hostname --static $FQDN
+printf "$IP_ADDR\t$HNAME $FQDN\n" >> /etc/hosts
 
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Name",Value="$FQDN"
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Domain",Value="$DOMAIN"
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="VPC",Value="{{ vpc_name }}"
+aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Service",Value="{{ service | lower }}"
 
 {% if volumes is defined %}
   {% for vol in volumes %}
