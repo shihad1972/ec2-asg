@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # Output commands and results to log file for testing
 # Uncomment below command and add -x to shebang above to enable
-#exec > /tmp/user-data.log 2>&1
+exec > /tmp/user-data.log 2>&1
 
 # Collect metadata
 export AZ=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
@@ -37,4 +37,10 @@ if [ ! -z "$volume_id_{{ loop.index }}" ]; then
 fi
   {% endfor %}
 {% endif %}
+
+if [ -f /etc/default/xymon-client ]; then
+  sed -i 's/^XYMONSERVERS=".*"/XYMONSERVERS="home.shihad.org"/' /etc/default/xymon-client
+  sed -i 's/^CLIENTHOSTNAME=".*"/CLIENTHOSTNAME="{{ service }}.{{ ext_domain }}"/' /etc/default/xymon-client
+  systemctl restart xymon-client
+fi
 
