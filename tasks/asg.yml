@@ -8,6 +8,27 @@
     - component is defined
     msg: "Required variable not set."
 
+# The following task requires the 'aws_sns_arn_from_name' lookup
+# plugin. To allow it to be reused, it should be installed a directory
+# controlled by the 'lookup_plugins' parameter in your 'ansible.cfg' file.
+# If no topic name is provided to the role it will not be used.
+
+- name: Create the Auto Scaling Group with SNS Topic
+  ec2_asg:
+    name: "{{ component | upper }}-{{ env | upper }}-{{ service | upper }}-ASG"
+    region: "{{ region }}"
+    load_balancers: "{{ load_balancers | default([]) }}"
+    availability_zones: "{{ azs | default([]) }}"
+    launch_config_name: "{{ launch_config }}"
+    vpc_zone_identifier: "{{ subnet_ids }}"
+    notification_topic: "{{ lookup('aws_sns_arn_from_name', (region, topic_name)) }}"
+    notification_types: "{{ notification_types | default(['autoscaling:EC2_INSTANCE_LAUNCH']) }}"
+    min_size: "{{ min_size | default(0) }}"
+    max_size: "{{ max_size | default(1) }}"
+    desired_capacity: "{{ desired | default(0) }}"
+  register: new_asg
+  when: topic_name is defined
+
 - name: Create the Auto Scaling Group
   ec2_asg:
     name: "{{ component | upper }}-{{ env | upper }}-{{ service | upper }}-ASG"
@@ -20,3 +41,4 @@
     max_size: "{{ max_size | default(1) }}"
     desired_capacity: "{{ desired | default(0) }}"
   register: new_asg
+  when: topic_name is not defined
