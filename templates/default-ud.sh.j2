@@ -29,7 +29,7 @@ aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="VPC",V
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Service",Value="{{ service | lower }}"
 
 # Get Subnet tier to check if we add the external domain
-export SUBNET_TIER=$(aws ec2 describe-subnets --region ${REGION} --subnet-id ${SUBNET_ID} | jq -r .Subnets[].Tags | grep -B 1 Tier | grep Value | awk -F ':' '{print $2}' | sed 's/"//g' | sed 's/,//g' | sed 's/ //g')
+export SUBNET_TIER=$(aws ec2 describe-subnets --region eu-west-1 --subnet-id ${SUBNET_ID} --output=text | grep Tier | awk '{print $3}')
 if [ [ "${SUBNET_TIER}" =~ "Public" ] || [ "${SUBNET_TIER}" =~ "Presentation" ] ]; then
   aws ec2 create-tags --region ${REGION} --resources ${INSTANCE_ID} --tags Key="ExternalDomain",Value="${EXT_DOMAIN}"
 fi
