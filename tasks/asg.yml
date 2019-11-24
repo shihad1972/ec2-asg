@@ -26,6 +26,7 @@
     min_size: "{{ min_size | default(0) }}"
     max_size: "{{ max_size | default(1) }}"
     desired_capacity: "{{ desired | default(0) }}"
+    tags: "{{ tags | default('omit') }}"
   register: new_asg
   when: topic_name is defined
 
