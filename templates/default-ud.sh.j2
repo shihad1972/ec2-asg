@@ -24,17 +24,17 @@ hostnamectl set-hostname --static $FQDN
 printf "$IP_ADDR\t$HNAME $FQDN\n" >> /etc/hosts
 
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Name",Value="$FQDN"
-aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="InternalDomain",Value="$DOMAIN"
-aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="VPC",Value="{{ vpc_name }}"
-aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Service",Value="{{ service | lower }}"
+#aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="InternalDomain",Value="$DOMAIN"
+#aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="VPC",Value="{{ vpc_name }}"
+#aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Service",Value="{{ service | lower }}"
 
 # Get Subnet tier to check if we add the external domain
-export SUBNET_TIER=$(aws ec2 describe-subnets --region eu-west-1 --subnet-id ${SUBNET_ID} --output=text | grep Tier | awk '{print $3}')
-if [ -z "{SUBNET_TIER}" ]; then
-  echo "Cannot determine the subnet tier"
-elif [[ "${SUBNET_TIER}" =~ "Public" || "${SUBNET_TIER}" =~ "Presentation" ]]; then
-  aws ec2 create-tags --region ${REGION} --resources ${INSTANCE_ID} --tags Key="ExternalDomain",Value="${EXT_DOMAIN}"
-fi
+#export SUBNET_TIER=$(aws ec2 describe-subnets --region eu-west-1 --subnet-id ${SUBNET_ID} --output=text | grep Tier | awk '{print $3}')
+#if [ -z "{SUBNET_TIER}" ]; then
+#  echo "Cannot determine the subnet tier"
+#elif [[ "${SUBNET_TIER}" =~ "Public" || "${SUBNET_TIER}" =~ "Presentation" ]]; then
+#  aws ec2 create-tags --region ${REGION} --resources ${INSTANCE_ID} --tags Key="ExternalDomain",Value="${EXT_DOMAIN}"
+#fi
 
 # Attach any static volumes
 {% if volumes is defined %}
