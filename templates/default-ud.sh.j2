@@ -42,6 +42,10 @@ fi
 if [ -f /etc/default/xymon-client ]; then
   sed -i 's/^XYMONSERVERS=".*"/XYMONSERVERS="home.shihad.org"/' /etc/default/xymon-client
   sed -i 's/^CLIENTHOSTNAME=".*"/CLIENTHOSTNAME="{{ service }}.{{ ext_domain }}"/' /etc/default/xymon-client
+  # Add xymon monitoring user to adm group to read log files.
+  if getent group adm > /dev/null && getent passwd xymon; then
+    usermod -a -G adm xymon
+  fi
   systemctl restart xymon-client
 fi
 
