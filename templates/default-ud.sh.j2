@@ -18,7 +18,7 @@ export DOMAIN="{{ domain }}"
 export EXT_DOMAIN="{{ ext_domain }}"
 export HNAME="{{ service | lower}}-${SHORT_ID}"
 export FQDN="${HNAME}.${DOMAIN}"
-export MONITOR=$(aws ec2 describe-tags --region ${REGION} --filter Name=resource-id,Values=i-03eb88a7b980c6c78 --output text | grep Monitor | awk '{print $5}')
+export MONITOR=$(aws ec2 describe-tags --region ${REGION} --filter Name=resource-id,Values=${INSTANCE_ID} --output text | grep Monitor | awk '{print $5}')
 
 # Setup Hostname
 hostnamectl set-hostname --static $FQDN
