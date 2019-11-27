@@ -18,6 +18,7 @@ export DOMAIN="{{ domain }}"
 export EXT_DOMAIN="{{ ext_domain }}"
 export HNAME="{{ service | lower}}-${SHORT_ID}"
 export FQDN="${HNAME}.${DOMAIN}"
+export MONITOR=$(aws ec2 describe-tags --filter Name=resource-id,Values=i-03eb88a7b980c6c78 --output text | grep Monitor | awk '{print $5}')
 
 # Setup Hostname
 hostnamectl set-hostname --static $FQDN
@@ -45,6 +46,13 @@ if [ -f /etc/default/xymon-client ]; then
   # Add xymon monitoring user to adm group to read log files.
   if getent group adm > /dev/null && getent passwd xymon; then
     usermod -a -G adm xymon
+  fi
+  # Grab the patching script from S3
+  if [[ ! -z "$MONITOR" &&  "$MONITOR" == "xymon" ]]; then
+    aws s3 cp s3://{{ s3_bucket }}/xymon/{{ patch_script }} {{ patch_script }}
+    aws s3 cp s3://{{ s3_bucket }}/xymon/{{ deploy_script }} {{ deploy_script }}
+    chmod 755 *.sh
+    ./{{ deploy.script }}
   fi
   systemctl restart xymon-client
 fi
