@@ -52,7 +52,7 @@ if [ -f /etc/default/xymon-client ]; then
     aws s3 cp s3://{{ s3_bucket }}/xymon/{{ patch_script }} {{ patch_script }}
     aws s3 cp s3://{{ s3_bucket }}/xymon/{{ deploy_script }} {{ deploy_script }}
     chmod 755 *.sh
-    ./{{ deploy.script }}
+    ./{{ deploy_script }}
   fi
   systemctl restart xymon-client
 fi
