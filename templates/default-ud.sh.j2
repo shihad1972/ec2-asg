@@ -40,6 +40,7 @@ fi
   {% endfor %}
 {% endif %}
 
+# Setup the xymon monitoring client
 if [ -f /etc/default/xymon-client ]; then
   sed -i 's/^XYMONSERVERS=".*"/XYMONSERVERS="home.shihad.org"/' /etc/default/xymon-client
   sed -i 's/^CLIENTHOSTNAME=".*"/CLIENTHOSTNAME="{{ service }}.{{ ext_domain }}"/' /etc/default/xymon-client
@@ -57,3 +58,8 @@ if [ -f /etc/default/xymon-client ]; then
   systemctl restart xymon-client
 fi
 
+# Enable puppet client
+if [ -f /etc/puppetlabs/puppet/puppet.conf ]; then
+  systemctl enable puppet
+  systemctl start puppet
+fi
