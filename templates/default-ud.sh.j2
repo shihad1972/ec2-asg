@@ -23,6 +23,7 @@ export MONITOR=$(aws ec2 describe-tags --region ${REGION} --filter Name=resource
 # Setup Hostname
 hostnamectl set-hostname --static $FQDN
 printf "$IP_ADDR\t$HNAME $FQDN\n" >> /etc/hosts
+systemctl restart rsyslog
 
 aws ec2 create-tags --region $REGION --resources $INSTANCE_ID --tags Key="Name",Value="$FQDN"
 
